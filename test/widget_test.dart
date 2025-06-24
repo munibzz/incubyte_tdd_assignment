@@ -16,10 +16,19 @@ void main() {
   int add(String numbers) {
     if (numbers.isEmpty) return 0;
 
-    numbers = numbers.replaceAll('\n', ',');
+    String delimiter = ',';
+    String numbersToProcess = numbers;
+
+     if (numbers.startsWith('//')) {
+    var parts = numbers.split('\n');
+    delimiter = parts[0].substring(2); 
+    numbersToProcess = parts[1]; 
+  }
+
+  numbersToProcess = numbersToProcess.replaceAll('\n', delimiter);
     
-    return numbers
-        .split(',')
+    return numbersToProcess
+        .split(delimiter)
         .map((str) => int.parse(str))
         .reduce((sum, number) => sum + number);
   }
@@ -45,7 +54,12 @@ void main() {
     test('should handle new line as delimiter', () {
       expect(add("1\n2,3"), equals(6));
     });
-    
+
+    test('should handle custom delimiter', () {
+      expect(add("//;\n1;2"), equals(3));
+      expect(add("//|\n1|2|3"), equals(6));
+    });
+
   });
 
 
