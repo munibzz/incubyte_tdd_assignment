@@ -11,30 +11,38 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:incubyte_tdd_assignment/main.dart';
 
 void main() {
-
-
   int add(String numbers) {
     if (numbers.isEmpty) return 0;
 
     String delimiter = ',';
     String numbersToProcess = numbers;
+    List<int> negativeNumbers = [];
 
-     if (numbers.startsWith('//')) {
-    var parts = numbers.split('\n');
-    delimiter = parts[0].substring(2); 
-    numbersToProcess = parts[1]; 
+    if (numbers.startsWith('//')) {
+      var parts = numbers.split('\n');
+      delimiter = parts[0].substring(2);
+      numbersToProcess = parts[1];
+    }
+
+    numbersToProcess = numbersToProcess.replaceAll('\n', delimiter);
+
+    var numbersList = numbersToProcess.split(delimiter).map((str) {
+      int number = int.tryParse(str.trim()) ?? 0;
+      if (number < 0) {
+        negativeNumbers.add(number);
+      }
+      return number;
+    }).toList();
+
+    if (negativeNumbers.isNotEmpty) {
+      throw FormatException(
+          "Negative numbers are not allowed: ${negativeNumbers.join(', ')}");
+    }
+
+    return numbersList.reduce((sum, number) => sum + number);
   }
 
-  numbersToProcess = numbersToProcess.replaceAll('\n', delimiter);
-    
-    return numbersToProcess
-        .split(delimiter)
-        .map((str) => int.parse(str))
-        .reduce((sum, number) => sum + number);
-  }
-  
-
-   group('StringCalculator', () {
+  group('StringCalculator', () {
     test('should return 0 for empty string', () {
       expect(add(""), equals(0));
     });
@@ -60,8 +68,9 @@ void main() {
       expect(add("//|\n1|2|3"), equals(6));
     });
 
+    test('should throw negative number exception', () {
+      expect(add("//;\n1;2"), equals(3));
+      expect(add("//|\n-1|-2|-3"), equals(6));
+    });
   });
-
-
-  
 }
