@@ -15,6 +15,8 @@ void main() {
 
   int add(String numbers) {
     if (numbers.isEmpty) return 0;
+
+    numbers = numbers.replaceAll('\n', ',');
     
     return numbers
         .split(',')
@@ -39,6 +41,11 @@ void main() {
     test('should return sum for multiple numbers', () {
       expect(add("1,2,3"), equals(6));
     });
+
+    test('should handle new line as delimiter', () {
+      expect(add("1\n2,3"), equals(6));
+    });
+    
   });
 
 
