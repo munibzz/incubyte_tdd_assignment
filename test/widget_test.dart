@@ -11,20 +11,36 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:incubyte_tdd_assignment/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  int add(String numbers) {
+    if (numbers.isEmpty) return 0;
+    
+    return numbers
+        .split(',')
+        .map((str) => int.parse(str))
+        .reduce((sum, number) => sum + number);
+  }
+  
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+   group('StringCalculator', () {
+    test('should return 0 for empty string', () {
+      expect(add(""), equals(0));
+    });
+
+    test('should return number itself for single number', () {
+      expect(add("1"), equals(1));
+    });
+
+    test('should return sum for two numbers', () {
+      expect(add("1,5"), equals(6));
+    });
+
+    test('should return sum for multiple numbers', () {
+      expect(add("1,2,3"), equals(6));
+    });
   });
+
+
+  
 }
